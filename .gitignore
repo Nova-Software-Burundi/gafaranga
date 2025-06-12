@@ -11,6 +11,9 @@ target/
 *.iws
 *.iml
 *.ipr
+.idea/
+!.idea/codeStyles/         # (optional) keep shared code style settings
+!.idea/runConfigurations/  # (optional) keep shared run configs
 
 ### Eclipse ###
 .apt_generated
