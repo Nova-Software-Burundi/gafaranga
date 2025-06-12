@@ -1,23 +1,26 @@
 package bi.nova.gafaranga;
 
+import java.util.List;
+
 public class Block {
     private int index;
     private long timestamp;
-    private String data;
+    private List<Transaction> transactions;
     private String previousHash;
     private String hash;
+    private int nonce;
 
-    public Block(int index, long timestamp, String data, String previousHash) {
+    public Block(int index, long timestamp, List<Transaction> transactions, String previousHash) {
         this.index = index;
         this.timestamp = timestamp;
-        this.data = data;
+        this.transactions = transactions;
         this.previousHash = previousHash;
         this.hash = calculateHash();
     }
 
     private String calculateHash() {
-        String input = index + Long.toString(timestamp) + data + previousHash;
-        return StringUtil.applySha256(input); // You must have a utility for hashing
+        // You can improve this later
+        return StringUtil.applySha256(index + previousHash + timestamp + transactions.toString() + nonce);
     }
 
     public String getHash() {

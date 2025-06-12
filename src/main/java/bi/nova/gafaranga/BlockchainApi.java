@@ -2,6 +2,8 @@ package bi.nova.gafaranga;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlockchainApi {
@@ -18,6 +20,7 @@ public class BlockchainApi {
         app.get("/chain", ctx -> ctx.json(blockchain.getChain()));
         app.get("/block/{index}", this::getBlockByIndex);
         app.post("/mine", this::mineBlock);
+        app.post("/transaction", this::createTransaction);
     }
 
     private void getBlockByIndex(Context ctx) {
@@ -29,17 +32,14 @@ public class BlockchainApi {
             ctx.status(404).result("Block not found");
         }
     }
+    private void createTransaction(Context ctx) {
+        Transaction tx = ctx.bodyAsClass(Transaction.class);
+        blockchain.addTransaction(tx);
+        ctx.status(201).result("Transaction added");
+    }
 
     private void mineBlock(Context ctx) {
-        String data = ctx.body();
-        Block lastBlock = blockchain.getLatestBlock();
-        Block newBlock = new Block(
-                lastBlock.getIndex() + 1,
-                System.currentTimeMillis(),
-                data,
-                lastBlock.getHash()
-        );
-        blockchain.addBlock(newBlock);
-        ctx.json(newBlock);
+        blockchain.mineBlock();
+        ctx.result("Block mined successfully");
     }
 }

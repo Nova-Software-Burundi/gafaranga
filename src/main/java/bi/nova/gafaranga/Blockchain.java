@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Blockchain {
     private List<Block> chain;
+    private List<Transaction> pendingTransactions = new ArrayList<>();
 
     public Blockchain() {
         chain = new ArrayList<>();
@@ -12,7 +13,7 @@ public class Blockchain {
     }
 
     private Block createGenesisBlock() {
-        return new Block(0, System.currentTimeMillis(), "Genesis Block", "0");
+        return new Block(0, System.currentTimeMillis(), pendingTransactions, "0");
     }
 
     public Block getLatestBlock() {
@@ -25,5 +26,20 @@ public class Blockchain {
 
     public List<Block> getChain() {
         return chain;
+    }
+
+    public void addTransaction(Transaction tx) {
+        pendingTransactions.add(tx);
+    }
+
+    public void mineBlock() {
+        Block newBlock = new Block(
+                getLatestBlock().getIndex() + 1,
+                System.currentTimeMillis(),
+                new ArrayList<>(pendingTransactions),
+                getLatestBlock().getHash()
+        );
+        addBlock(newBlock);
+        pendingTransactions.clear();
     }
 }
