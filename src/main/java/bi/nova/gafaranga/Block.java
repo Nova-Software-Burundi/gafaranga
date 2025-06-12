@@ -1,30 +1,32 @@
 package bi.nova.gafaranga;
 
 public class Block {
-    public String hash;
-    public String previousHash;
-    public String data;
-    public long timestamp;
-    public int nonce;
+    private int index;
+    private long timestamp;
+    private String data;
+    private String previousHash;
+    private String hash;
 
-    public Block(String data, String previousHash) {
+    public Block(int index, long timestamp, String data, String previousHash) {
+        this.index = index;
+        this.timestamp = timestamp;
         this.data = data;
         this.previousHash = previousHash;
-        this.timestamp = System.currentTimeMillis();
         this.hash = calculateHash();
     }
 
-    public String calculateHash() {
-        String input = previousHash + Long.toString(timestamp) + Integer.toString(nonce) + data;
-        return HashUtil.sha256(input);
+    private String calculateHash() {
+        String input = index + Long.toString(timestamp) + data + previousHash;
+        return StringUtil.applySha256(input); // You must have a utility for hashing
     }
 
-    public void mineBlock(int difficulty) {
-        String target = new String(new char[difficulty]).replace('\0', '0');
-        while (!hash.substring(0, difficulty).equals(target)) {
-            nonce++;
-            hash = calculateHash();
-        }
-        System.out.println("Block mined: " + hash);
+    public String getHash() {
+        return hash;
     }
+
+    public int getIndex() {
+        return index;
+    }
+
+    // Other getters as needed...
 }

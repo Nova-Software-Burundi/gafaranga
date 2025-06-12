@@ -4,21 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Blockchain {
-    public static List<Block> chain = new ArrayList<>();
-    public static int difficulty = 3;
+    private List<Block> chain;
 
-    public static void addBlock(Block block) {
-        block.mineBlock(difficulty);
-        chain.add(block);
-        // store to LevelDB here
+    public Blockchain() {
+        chain = new ArrayList<>();
+        chain.add(createGenesisBlock());
     }
 
-    public static Block getLatestBlock() {
+    private Block createGenesisBlock() {
+        return new Block(0, System.currentTimeMillis(), "Genesis Block", "0");
+    }
+
+    public Block getLatestBlock() {
         return chain.get(chain.size() - 1);
     }
 
-    public static void initializeChain() {
-        Block genesis = new Block("Genesis Block", "0");
-        addBlock(genesis);
+    public void addBlock(Block newBlock) {
+        chain.add(newBlock);
+    }
+
+    public List<Block> getChain() {
+        return chain;
     }
 }
