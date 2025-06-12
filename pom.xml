@@ -28,6 +28,13 @@
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.70</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.fusesource.leveldbjni/leveldbjni-all -->
+        <dependency>
+            <groupId>org.fusesource.leveldbjni</groupId>
+            <artifactId>leveldbjni-all</artifactId>
+            <version>1.8</version>
+        </dependency>
     </dependencies>
 
 </project>
