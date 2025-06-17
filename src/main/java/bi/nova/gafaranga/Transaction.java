@@ -1,14 +1,22 @@
 package bi.nova.gafaranga;
 
+import java.math.BigDecimal;
+
 public class Transaction {
-        private String sender;
-        private String recipient;
-        private double amount;
+        public String sender;
+        public String recipient;
+        public BigDecimal amount;
 
         // Default constructor (required for Jackson)
         public Transaction() {}
 
-        // Getters and setters
+        public Transaction(String from, String to, BigDecimal amount) {
+            this.sender = from;
+            this.recipient = to;
+            this.amount = amount;
+        }
+
+    // Getters and setters
         public String getSender() {
             return sender;
         }
@@ -25,11 +33,11 @@ public class Transaction {
             this.recipient = recipient;
         }
 
-        public double getAmount() {
+        public BigDecimal getAmount() {
             return amount;
         }
 
-        public void setAmount(double amount) {
+        public void setAmount(BigDecimal amount) {
             this.amount = amount;
         }
     }

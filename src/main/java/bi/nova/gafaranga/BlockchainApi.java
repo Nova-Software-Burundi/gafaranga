@@ -21,6 +21,10 @@ public class BlockchainApi {
         app.get("/block/{index}", this::getBlockByIndex);
         app.post("/mine", this::mineBlock);
         app.post("/transaction", this::createTransaction);
+        app.get("/balance/{address}", ctx -> {
+            String address = ctx.pathParam("address");
+            ctx.result(blockchain.getBalance(address).toPlainString());
+        });
     }
 
     private void getBlockByIndex(Context ctx) {
