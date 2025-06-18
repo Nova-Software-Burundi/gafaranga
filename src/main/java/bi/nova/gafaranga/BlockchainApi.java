@@ -38,6 +38,12 @@ public class BlockchainApi {
     }
     private void createTransaction(Context ctx) {
         Transaction tx = ctx.bodyAsClass(Transaction.class);
+
+        if ("SYSTEM".equalsIgnoreCase(tx.getSender())) {
+            ctx.status(403).result("SYSTEM address is reserved and cannot be used for transactions.");
+            return;
+        }
+
         blockchain.addTransaction(tx);
         ctx.status(201).result("Transaction added");
     }
