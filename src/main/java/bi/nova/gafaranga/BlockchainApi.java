@@ -3,6 +3,7 @@ package bi.nova.gafaranga;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,9 +45,17 @@ public class BlockchainApi {
             return;
         }
 
+        BigDecimal senderBalance = blockchain.getBalance(tx.getSender());
+
+        if (senderBalance.compareTo(tx.getAmount()) < 0) {
+            ctx.status(400).result("Insufficient funds for transaction.");
+            return;
+        }
+
         blockchain.addTransaction(tx);
         ctx.status(201).result("Transaction added");
     }
+
 
     private void mineBlock(Context ctx) {
         blockchain.mineBlock();
