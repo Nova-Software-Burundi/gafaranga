@@ -62,3 +62,25 @@ To run the project:
 git clone https://github.com/your-org/gafaranga.git
 cd gafaranga
 ./gradlew run
+
+```
+
+## 📚 Future Plans
+
+- Multi-node networking
+- Proof-of-Authority cluster
+- Token governance & staking
+- Mobile client integration
+- Light wallet support
+
+---
+
+## 🙌 Contributions
+
+This project is in its early stages and welcomes ideas, testing, and contributions — especially from developers passionate about building blockchain systems in a practical and understandable way.
+
+---
+
+## 📄 License
+
+MIT License — use freely, fork safely, build boldly.
