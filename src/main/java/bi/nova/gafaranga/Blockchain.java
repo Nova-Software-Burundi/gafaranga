@@ -10,6 +10,7 @@ public class Blockchain {
     private List<Block> chain;
     private List<Transaction> pendingTransactions = new ArrayList<>();
     private Map<String, BigDecimal> balances = new HashMap<>();
+    private String minerAddress = "GAF_MINER"; // To be set via constructor later
 
     public Blockchain() {
         chain = new ArrayList<>();
@@ -48,36 +49,38 @@ public class Blockchain {
     }
 
     public void mineBlock() {
-            if (pendingTransactions.isEmpty()) {
-                System.out.println("No transactions to mine.");
-                return;
-            }
+        if (pendingTransactions.isEmpty()) {
+            System.out.println("No transactions to mine.");
+            return;
+        }
 
-            int index = chain.size();
-            long timestamp = System.currentTimeMillis();
-            Block lastBlock = chain.get(chain.size() - 1);
-            String previousHash = lastBlock.getHash();
+        // Add mining reward
+        Transaction rewardTx = new Transaction("SYSTEM", minerAddress, new BigDecimal("1"));
+        List<Transaction> blockTxs = new ArrayList<>();
+        blockTxs.add(rewardTx);
+        blockTxs.addAll(pendingTransactions);
 
-            Block newBlock = new Block(index, timestamp, new ArrayList<>(pendingTransactions), previousHash);
+        int index = chain.size();
+        long timestamp = System.currentTimeMillis();
+        String previousHash = chain.get(chain.size() - 1).getHash();
+        Block newBlock = new Block(index, timestamp, blockTxs, previousHash);
 
-        System.out.println("Pending tx: " + pendingTransactions.size());
-
-            // Apply transactions
-            for (Transaction tx : pendingTransactions) {
-                if (!tx.sender.equals("SYSTEM")) {
-                    BigDecimal senderBalance = balances.getOrDefault(tx.sender, BigDecimal.ZERO);
-                    if (senderBalance.compareTo(tx.amount) < 0) {
-                        System.out.println("Insufficient funds, skipping transaction");
-                        continue;
-                    }
-                    balances.put(tx.sender, senderBalance.subtract(tx.amount));
+        // Apply all transactions (reward + pending)
+        for (Transaction tx : blockTxs) {
+            if (!tx.getSender().equals("SYSTEM")) {
+                BigDecimal senderBalance = balances.getOrDefault(tx.getSender(), BigDecimal.ZERO);
+                if (senderBalance.compareTo(tx.getAmount()) < 0) {
+                    System.out.println("Skipped tx: insufficient funds from " + tx.getSender());
+                    continue;
                 }
-
-                BigDecimal receiverBalance = balances.getOrDefault(tx.recipient, BigDecimal.ZERO);
-                balances.put(tx.recipient, receiverBalance.add(tx.amount));
+                balances.put(tx.getSender(), senderBalance.subtract(tx.getAmount()));
             }
 
-            chain.add(newBlock);
-            pendingTransactions.clear();
+            BigDecimal receiverBalance = balances.getOrDefault(tx.getRecipient(), BigDecimal.ZERO);
+            balances.put(tx.getRecipient(), receiverBalance.add(tx.getAmount()));
+        }
+
+        chain.add(newBlock);
+        pendingTransactions.clear();
         }
 }
