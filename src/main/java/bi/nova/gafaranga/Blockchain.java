@@ -84,4 +84,16 @@ public class Blockchain {
     public Map<String, BigDecimal> getAllBalances() {
         return Collections.unmodifiableMap(balances);
     }
+
+    public List<Transaction> getTransactionsForAddress(String address) {
+        List<Transaction> result = new ArrayList<>();
+        for (Block block : chain) {
+            for (Transaction tx : block.getTransactions()) {
+                if (address.equals(tx.getSender()) || address.equals(tx.getRecipient())) {
+                    result.add(tx);
+                }
+            }
+        }
+        return result;
+    }
 }

@@ -6,6 +6,7 @@ public class Transaction {
         public String sender;
         public String recipient;
         public BigDecimal amount;
+        private long timestamp = System.currentTimeMillis();
 
         // Default constructor (required for Jackson)
         public Transaction() {}

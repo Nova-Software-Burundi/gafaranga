@@ -32,4 +32,9 @@ public class Block {
     }
 
     // Other getters as needed...
+
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
 }
