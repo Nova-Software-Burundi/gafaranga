@@ -21,6 +21,17 @@ public class Blockchain {
         balances.put("GAF_FOUNDER", new BigDecimal("100000000"));
     }
 
+    public Transaction getTransactionById(String txId) {
+        for (Block block : chain) {
+            for (Transaction tx : block.getTransactions()) {
+                if (tx.getTxId().equals(txId)) {
+                    return tx;
+                }
+            }
+        }
+        return null;
+    }
+
     public BigDecimal getBalance(String address) {
         return balances.getOrDefault(address, BigDecimal.ZERO);
     }

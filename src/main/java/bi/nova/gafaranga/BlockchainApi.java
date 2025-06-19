@@ -29,6 +29,17 @@ public class BlockchainApi {
         app.get("/balances", ctx -> ctx.json(blockchain.getAllBalances()));
         app.get("/transactions/{address}", this::getTransactionsForAddress);
         app.get("/block/hash/{hash}", this::getBlockByHash);
+        app.get("/transaction/{id}", this::getTransactionById);
+    }
+
+    private void getTransactionById(Context ctx) {
+        String id = ctx.pathParam("id");
+        Transaction tx = blockchain.getTransactionById(id);
+        if (tx != null) {
+            ctx.json(tx);
+        } else {
+            ctx.status(404).result("Transaction not found");
+        }
     }
 
     private void getBlockByHash(Context ctx) {
@@ -64,8 +75,12 @@ public class BlockchainApi {
             return;
         }
 
-        BigDecimal senderBalance = blockchain.getBalance(tx.getSender());
+        // Force generation of txId after deserialization
+        if (tx.getTxId() == null || tx.getTxId().isEmpty()) {
+            tx.setTxId(tx.generateTxId());
+        }
 
+        BigDecimal senderBalance = blockchain.getBalance(tx.getSender());
         if (senderBalance.compareTo(tx.getAmount()) < 0) {
             ctx.status(400).result("Insufficient funds for transaction.");
             return;
@@ -74,7 +89,6 @@ public class BlockchainApi {
         blockchain.addTransaction(tx);
         ctx.status(201).result("Transaction added");
     }
-
 
     private void mineBlock(Context ctx) {
         blockchain.mineBlock();
