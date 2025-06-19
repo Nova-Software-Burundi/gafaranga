@@ -85,6 +85,15 @@ public class Blockchain {
         return Collections.unmodifiableMap(balances);
     }
 
+    public Block getBlockByHash(String hash) {
+        for (Block block : chain) {
+            if (block.getHash().equals(hash)) {
+                return block;
+            }
+        }
+        return null;
+    }
+
     public List<Transaction> getTransactionsForAddress(String address) {
         List<Transaction> result = new ArrayList<>();
         for (Block block : chain) {

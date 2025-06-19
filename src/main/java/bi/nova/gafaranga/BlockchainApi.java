@@ -28,6 +28,17 @@ public class BlockchainApi {
         });
         app.get("/balances", ctx -> ctx.json(blockchain.getAllBalances()));
         app.get("/transactions/{address}", this::getTransactionsForAddress);
+        app.get("/block/hash/{hash}", this::getBlockByHash);
+    }
+
+    private void getBlockByHash(Context ctx) {
+        String hash = ctx.pathParam("hash");
+        Block result = blockchain.getBlockByHash(hash);
+        if (result != null) {
+            ctx.json(result);
+        } else {
+            ctx.status(404).result("Block not found");
+        }
     }
 
     private void getTransactionsForAddress(Context ctx) {
