@@ -9,6 +9,8 @@ public class Blockchain {
     private Map<String, BigDecimal> balances = new HashMap<>();
     private String minerAddress = "GAF_MINER"; // To be set via constructor later
 
+    public static final BigDecimal TRANSACTION_FEE = new BigDecimal("0.01");
+
     public Blockchain() {
         chain = new ArrayList<>();
         Transaction genesisTx = new Transaction("SYSTEM", "GAF_FOUNDER", new BigDecimal("100000000"));
@@ -75,13 +77,20 @@ public class Blockchain {
 
         // Apply all transactions (reward + pending)
         for (Transaction tx : blockTxs) {
-            if (!tx.getSender().equals("SYSTEM")) {
+            if (!"SYSTEM".equals(tx.getSender())) {
                 BigDecimal senderBalance = balances.getOrDefault(tx.getSender(), BigDecimal.ZERO);
-                if (senderBalance.compareTo(tx.getAmount()) < 0) {
+                BigDecimal totalDeduction = tx.getAmount().add(TRANSACTION_FEE);
+
+                if (senderBalance.compareTo(totalDeduction) < 0) {
                     System.out.println("Skipped tx: insufficient funds from " + tx.getSender());
                     continue;
                 }
-                balances.put(tx.getSender(), senderBalance.subtract(tx.getAmount()));
+
+                balances.put(tx.getSender(), senderBalance.subtract(totalDeduction));
+
+                // Add fee to miner
+                BigDecimal minerBalance = balances.getOrDefault(minerAddress, BigDecimal.ZERO);
+                balances.put(minerAddress, minerBalance.add(TRANSACTION_FEE));
             }
 
             BigDecimal receiverBalance = balances.getOrDefault(tx.getRecipient(), BigDecimal.ZERO);

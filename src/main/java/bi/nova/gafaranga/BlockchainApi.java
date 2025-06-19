@@ -81,8 +81,9 @@ public class BlockchainApi {
         }
 
         BigDecimal senderBalance = blockchain.getBalance(tx.getSender());
-        if (senderBalance.compareTo(tx.getAmount()) < 0) {
-            ctx.status(400).result("Insufficient funds for transaction.");
+        BigDecimal total = tx.getAmount().add(Blockchain.TRANSACTION_FEE);
+        if (senderBalance.compareTo(total) < 0) {
+            ctx.status(400).result("Insufficient funds for transaction and fee.");
             return;
         }
 
