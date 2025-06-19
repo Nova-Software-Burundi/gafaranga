@@ -26,6 +26,7 @@ public class BlockchainApi {
             String address = ctx.pathParam("address");
             ctx.result(blockchain.getBalance(address).toPlainString());
         });
+        app.get("/balances", ctx -> ctx.json(blockchain.getAllBalances()));
     }
 
     private void getBlockByIndex(Context ctx) {

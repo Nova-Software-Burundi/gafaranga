@@ -1,10 +1,7 @@
 package bi.nova.gafaranga;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Blockchain {
     private List<Block> chain;
@@ -83,4 +80,8 @@ public class Blockchain {
         chain.add(newBlock);
         pendingTransactions.clear();
         }
+
+    public Map<String, BigDecimal> getAllBalances() {
+        return Collections.unmodifiableMap(balances);
+    }
 }
