@@ -35,6 +35,14 @@ public class BlockchainApi {
         app.get("/transaction/{id}", this::getTransactionById);
         app.get("/mempool", ctx -> ctx.json(blockchain.getPendingTransactions()));
         app.get("/supply", ctx -> ctx.json(Map.of("totalSupply", blockchain.getTotalSupply())));
+        app.get("/wallet/new", ctx -> {
+            String address = StringUtil.generateWalletAddress();
+            ctx.json(Map.of(
+                    "address", address,
+                    "note", "Save this address securely. It is not stored on the server."
+            ));
+        });
+
     }
 
     private void getTransactionById(Context ctx) {
@@ -75,6 +83,16 @@ public class BlockchainApi {
     private void createTransaction(Context ctx) {
         Transaction tx = ctx.bodyAsClass(Transaction.class);
 
+        if (!isValidAddress(tx.getSender()) || !isValidAddress(tx.getRecipient())) {
+            ctx.status(400).result("Invalid wallet address format.");
+            return;
+        }
+
+        if ("SYSTEM".equalsIgnoreCase(tx.getSender()) || "GAF_FOUNDER".equalsIgnoreCase(tx.getSender())) {
+            ctx.status(403).result("Reserved address: transaction from SYSTEM or GAF_FOUNDER is not allowed.");
+            return;
+        }
+
         if (SYSTEM_ADDRESS.equalsIgnoreCase(tx.getSender())) {
             ctx.status(403).result("SYSTEM address is reserved and cannot be used for transactions.");
             return;
@@ -94,6 +112,10 @@ public class BlockchainApi {
 
         blockchain.addTransaction(tx);
         ctx.status(201).result("Transaction added");
+    }
+
+    private boolean isValidAddress(String addr) {
+        return addr != null && addr.matches("^wallet_[a-zA-Z0-9]{4,40}$");
     }
 
     private void mineBlock(Context ctx) {

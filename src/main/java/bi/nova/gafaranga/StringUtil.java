@@ -1,6 +1,7 @@
 package bi.nova.gafaranga;
 
 import java.security.MessageDigest;
+import java.util.UUID;
 
 public class StringUtil {
 
@@ -25,4 +26,11 @@ public class StringUtil {
             throw new RuntimeException(e);
         }
     }
+
+    public static String generateWalletAddress() {
+        String prefix = "wallet_";
+        String randomPart = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        return prefix + randomPart;
+    }
+
 }
