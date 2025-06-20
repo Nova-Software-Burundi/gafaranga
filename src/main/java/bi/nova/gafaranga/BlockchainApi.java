@@ -32,6 +32,7 @@ public class BlockchainApi {
         app.get("/transactions/{address}", this::getTransactionsForAddress);
         app.get("/block/hash/{hash}", this::getBlockByHash);
         app.get("/transaction/{id}", this::getTransactionById);
+        app.get("/mempool", ctx -> ctx.json(blockchain.getPendingTransactions()));
     }
 
     private void getTransactionById(Context ctx) {

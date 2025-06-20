@@ -108,6 +108,11 @@ public class Blockchain {
         return Collections.unmodifiableMap(balances);
     }
 
+    public List<Transaction> getPendingTransactions() {
+        return Collections.unmodifiableList(pendingTransactions);
+    }
+
+
     public Block getBlockByHash(String hash) {
         for (Block block : chain) {
             if (block.getHash().equals(hash)) {
