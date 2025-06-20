@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static bi.nova.gafaranga.BlockChainConfig.SYSTEM_ADDRESS;
+
 public class BlockchainApi {
 
     private Blockchain blockchain;
@@ -70,7 +72,7 @@ public class BlockchainApi {
     private void createTransaction(Context ctx) {
         Transaction tx = ctx.bodyAsClass(Transaction.class);
 
-        if ("SYSTEM".equalsIgnoreCase(tx.getSender())) {
+        if (SYSTEM_ADDRESS.equalsIgnoreCase(tx.getSender())) {
             ctx.status(403).result("SYSTEM address is reserved and cannot be used for transactions.");
             return;
         }

@@ -3,17 +3,20 @@ package bi.nova.gafaranga;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static bi.nova.gafaranga.BlockChainConfig.FOUNDER_ADDRESS;
+import static bi.nova.gafaranga.BlockChainConfig.SYSTEM_ADDRESS;
+
 public class Blockchain {
     private List<Block> chain;
     private List<Transaction> pendingTransactions = new ArrayList<>();
     private Map<String, BigDecimal> balances = new HashMap<>();
     private String minerAddress = "GAF_MINER"; // To be set via constructor later
 
-    public static final BigDecimal TRANSACTION_FEE = new BigDecimal("0.01");
+    public static final BigDecimal TRANSACTION_FEE = BlockChainConfig.TRANSACTION_FEE;
 
     public Blockchain() {
         chain = new ArrayList<>();
-        Transaction genesisTx = new Transaction("SYSTEM", "GAF_FOUNDER", new BigDecimal("100000000"));
+        Transaction genesisTx = new Transaction(SYSTEM_ADDRESS, FOUNDER_ADDRESS, new BigDecimal("100000000"));
         List<Transaction> genesisTxs = new ArrayList<>();
         genesisTxs.add(genesisTx);
 
@@ -65,7 +68,7 @@ public class Blockchain {
         }
 
         // Add mining reward
-        Transaction rewardTx = new Transaction("SYSTEM", minerAddress, new BigDecimal("1"));
+        Transaction rewardTx = new Transaction(SYSTEM_ADDRESS, minerAddress, new BigDecimal("1"));
         List<Transaction> blockTxs = new ArrayList<>();
         blockTxs.add(rewardTx);
         blockTxs.addAll(pendingTransactions);
@@ -77,7 +80,7 @@ public class Blockchain {
 
         // Apply all transactions (reward + pending)
         for (Transaction tx : blockTxs) {
-            if (!"SYSTEM".equals(tx.getSender())) {
+            if (!SYSTEM_ADDRESS.equals(tx.getSender())) {
                 BigDecimal senderBalance = balances.getOrDefault(tx.getSender(), BigDecimal.ZERO);
                 BigDecimal totalDeduction = tx.getAmount().add(TRANSACTION_FEE);
 
