@@ -6,6 +6,7 @@ import io.javalin.http.Context;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static bi.nova.gafaranga.BlockChainConfig.SYSTEM_ADDRESS;
 
@@ -33,6 +34,7 @@ public class BlockchainApi {
         app.get("/block/hash/{hash}", this::getBlockByHash);
         app.get("/transaction/{id}", this::getTransactionById);
         app.get("/mempool", ctx -> ctx.json(blockchain.getPendingTransactions()));
+        app.get("/supply", ctx -> ctx.json(Map.of("totalSupply", blockchain.getTotalSupply())));
     }
 
     private void getTransactionById(Context ctx) {

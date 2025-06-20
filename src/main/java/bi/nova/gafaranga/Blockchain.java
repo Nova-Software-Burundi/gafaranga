@@ -112,6 +112,10 @@ public class Blockchain {
         return Collections.unmodifiableList(pendingTransactions);
     }
 
+    public BigDecimal getTotalSupply() {
+        return balances.values().stream()
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
     public Block getBlockByHash(String hash) {
         for (Block block : chain) {
