@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Block Details</title>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Block Details</h1>
+<div id="details"></div>
+<a href="index.html">← Back to Chain</a>
+
+<script src="js/api.js"></script>
+<script>
+    const index = new URLSearchParams(window.location.search).get("index");
+    api.fetchBlock(index).then(block => {
+      const div = document.getElementById("details");
+      div.innerHTML = `
+        <h3>Block #${block.index}</h3>
+        <p><strong>Hash:</strong> ${block.hash}</p>
+        <p><strong>Previous:</strong> ${block.previousHash}</p>
+        <h4>Transactions:</h4>
+        <ul>
+          ${block.transactions.map(tx => `<li>${tx.from} → ${tx.to}: ${tx.amount}</li>`).join("")}
+        </ul>
+      `;
+    });
+</script>
+</body>
+</html>

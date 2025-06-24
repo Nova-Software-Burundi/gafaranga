@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gafaranga Explorer</title>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Block Explorer</h1>
+<div id="chain"></div>
+
+<script src="js/api.js"></script>
+<script>
+    api.fetchChain().then(chain => {
+      const container = document.getElementById('chain');
+      chain.forEach(block => {
+        const div = document.createElement('div');
+        div.className = 'block';
+        div.innerHTML = `
+          <h3>Block #${block.index}</h3>
+          <p><strong>Hash:</strong> ${block.hash}</p>
+          <p><strong>Tx Count:</strong> ${block.transactions.length}</p>
+          <a href="block.html?index=${block.index}">View Block</a>
+        `;
+        container.appendChild(div);
+      });
+    });
+</script>
+</body>
+</html>

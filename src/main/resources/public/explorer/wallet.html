@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wallet View</title>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Wallet</h1>
+<div id="walletInfo"></div>
+<a href="index.html">← Back to Chain</a>
+
+<script src="js/api.js"></script>
+<script>
+    const address = new URLSearchParams(window.location.search).get("address");
+
+    Promise.all([
+      api.fetchBalance(address),
+      api.fetchTransactionsForAddress(address)
+    ]).then(([balance, txs]) => {
+      const div = document.getElementById("walletInfo");
+      div.innerHTML = `<h3>Address: ${address}</h3><p>Balance: ${balance}</p><h4>Transactions:</h4>`;
+      txs.forEach(tx => {
+        const el = document.createElement("div");
+        el.className = "tx";
+        el.innerText = `${tx.from} → ${tx.to}: ${tx.amount}`;
+        div.appendChild(el);
+      });
+    });
+</script>
+</body>
+</html>

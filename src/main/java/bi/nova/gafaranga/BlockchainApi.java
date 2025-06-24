@@ -2,6 +2,7 @@ package bi.nova.gafaranga;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import io.javalin.http.staticfiles.Location;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,7 +22,14 @@ public class BlockchainApi {
     }
 
     public void startServer() {
-        Javalin app = Javalin.create().start(7000);
+        Javalin app = Javalin.create(config -> {
+            // Serve static files (e.g., HTML, CSS, JS) under /explorer
+            config.staticFiles.add(staticFileConfig -> {
+                staticFileConfig.hostedPath = "/explorer";
+                staticFileConfig.directory = "/public/explorer"; // maps to src/main/resources/public/explorer
+                staticFileConfig.location = Location.CLASSPATH;
+            });
+        }).start(7000);
 
         app.get("/chain", ctx -> ctx.json(blockchain.getChain()));
         app.get("/block/{index}", this::getBlockByIndex);

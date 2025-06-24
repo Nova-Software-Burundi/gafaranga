@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transactions</title>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>All Transactions</h1>
+<div id="txs"></div>
+<a href="index.html">← Back to Chain</a>
+
+<script src="js/api.js"></script>
+<script>
+    api.fetchAllTransactions().then(txs => {
+      const div = document.getElementById("txs");
+      txs.forEach(tx => {
+        const el = document.createElement("div");
+        el.className = "tx";
+        el.innerHTML = `<strong>${tx.from}</strong> → <strong>${tx.to}</strong>: ${tx.amount}`;
+        div.appendChild(el);
+      });
+    });
+</script>
+</body>
+</html>
