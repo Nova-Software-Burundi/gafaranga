@@ -13,7 +13,18 @@ public class Blockchain {
     private Map<String, BigDecimal> balances = new HashMap<>();
     private String minerAddress = "GAF_MINER"; // To be set via constructor later
 
+    private final Map<String, Boolean> faucetHistory = new HashMap<>();
+
     public static final BigDecimal TRANSACTION_FEE = BlockChainConfig.TRANSACTION_FEE;
+
+    public boolean canUseFaucet(String address) {
+        return !faucetHistory.containsKey(address);
+    }
+
+    public void useFaucet(String address) {
+        faucetHistory.put(address, true);
+        addTransaction(new Transaction("GAF_FOUNDER", address, new BigDecimal(1000)));
+    }
 
     public Blockchain() {
         chain = new ArrayList<>();

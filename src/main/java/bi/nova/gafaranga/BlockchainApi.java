@@ -44,7 +44,26 @@ public class BlockchainApi {
         });
         app.get("/explorer", ctx -> ctx.json(blockchain.getBlockSummaries()));
         app.get("/status", ctx -> ctx.json(blockchain.getStatus()));
+        app.post("/faucet", this::faucet);
     }
+
+    private void faucet(Context ctx) {
+        Map<String, String> request = ctx.bodyAsClass(Map.class);
+        String address = request.get("address");
+
+        if (address == null || !address.startsWith("wallet_")) {
+            ctx.status(400).json(Map.of("status", "error", "message", "Invalid wallet address format"));
+            return;
+        }
+
+        if (blockchain.canUseFaucet(address)) {
+            blockchain.useFaucet(address);
+            ctx.status(200).json(Map.of("status", "ok", "message", "1000 GAF sent to " + address));
+        } else {
+            ctx.status(429).json(Map.of("status", "error", "message", "Faucet already used by this address"));
+        }
+    }
+
 
     private void getTransactionById(Context ctx) {
         String id = ctx.pathParam("id");
