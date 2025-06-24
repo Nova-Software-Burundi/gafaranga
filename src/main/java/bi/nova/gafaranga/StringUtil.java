@@ -1,5 +1,6 @@
 package bi.nova.gafaranga;
 
+import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.util.UUID;
 
@@ -31,6 +32,17 @@ public class StringUtil {
         String prefix = "wallet_";
         String randomPart = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
         return prefix + randomPart;
+    }
+
+    public static void main(String[] args) {
+        String signature = SignatureUtil.signTransaction(
+                "wallet_bd8cb474",
+                "wallet_8001214c",
+                BigDecimal.valueOf(200),
+                "117127060e854bf0" // privateKey from earlier
+        );
+
+        System.out.println("Signature: " + signature);
     }
 
 }

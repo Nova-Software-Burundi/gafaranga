@@ -17,6 +17,13 @@ public class Blockchain {
 
     public static final BigDecimal TRANSACTION_FEE = BlockChainConfig.TRANSACTION_FEE;
 
+    private Map<String, String> walletSecrets = new HashMap<>();
+
+    // For test/demo use only
+    public void registerWallet(String address, String privateKey) {
+        walletSecrets.put(address, privateKey);
+    }
+
     public boolean canUseFaucet(String address) {
         return !faucetHistory.containsKey(address);
     }
@@ -81,8 +88,31 @@ public class Blockchain {
     }
 
     public void addTransaction(Transaction tx) {
-        pendingTransactions.add(tx);
+        if (tx.getSender().equals("GAF_FOUNDER")) {
+            // System account — no signature check needed
+            pendingTransactions.add(tx);
+        } else {
+            // Simulated check with secret map (insecure on purpose for now)
+            String fakePrivateKey = walletSecrets.get(tx.getSender());
+            if (fakePrivateKey == null) {
+                throw new RuntimeException("Unknown wallet or missing private key");
+            }
+
+            boolean valid = SignatureUtil.verifyTransaction(tx.getSender(), tx.getRecipient(), tx.getAmount(), tx.getSignature(), fakePrivateKey);
+            System.out.println("Sender: " + tx.getSender());
+            System.out.println("Recipient: " + tx.getRecipient());
+            System.out.println("Amount: " + tx.getAmount());
+            System.out.println("Signature: " + tx.getSignature());
+            System.out.println("Priv Key: " + fakePrivateKey);
+
+            if (!valid) {
+                throw new RuntimeException("Invalid signature");
+            }
+
+            pendingTransactions.add(tx);
+        }
     }
+
 
     public void mineBlock() {
         if (pendingTransactions.isEmpty()) {

@@ -9,7 +9,10 @@ public class Transaction {
         private long timestamp = System.currentTimeMillis();
         private String txId;
 
-        // Default constructor (required for Jackson)
+        private String signature;   // Simulated signature
+        private String publicKey;   // Optional, for verification
+
+    // Default constructor (required for Jackson)
         public Transaction() {}
 
         public Transaction(String sender, String recipient, BigDecimal amount) {
@@ -20,7 +23,17 @@ public class Transaction {
             this.txId = generateTxId();
         }
 
-        public String generateTxId() {
+        public Transaction(String sender, String recipient, BigDecimal amount, long timestamp, String txId, String signature, String publicKey) {
+            this.sender = sender;
+            this.recipient = recipient;
+            this.amount = amount;
+            this.timestamp = timestamp;
+            this.txId = txId;
+            this.signature = signature;
+            this.publicKey = publicKey;
+        }
+
+    public String generateTxId() {
             String data = sender + recipient + amount + timestamp;
             return StringUtil.applySha256(data);
         }
@@ -57,4 +70,28 @@ public class Transaction {
         public void setTxId(String txId) {
             this.txId = txId;
         }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
 }

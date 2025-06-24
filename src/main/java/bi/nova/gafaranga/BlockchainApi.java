@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static bi.nova.gafaranga.BlockChainConfig.SYSTEM_ADDRESS;
 
@@ -37,9 +38,13 @@ public class BlockchainApi {
         app.get("/supply", ctx -> ctx.json(Map.of("totalSupply", blockchain.getTotalSupply())));
         app.get("/wallet/new", ctx -> {
             String address = StringUtil.generateWalletAddress();
+            String privateKey = UUID.randomUUID().toString().replace("-", "").substring(0, 16);
+            blockchain.registerWallet(address, privateKey);
+
             ctx.json(Map.of(
                     "address", address,
-                    "note", "Save this address securely. It is not stored on the server."
+                    "privateKey", privateKey,
+                    "note", "This key is required to sign transactions. Keep it secure."
             ));
         });
         app.get("/explorer", ctx -> ctx.json(blockchain.getBlockSummaries()));
