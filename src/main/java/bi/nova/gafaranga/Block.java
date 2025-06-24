@@ -23,18 +23,27 @@ public class Block {
         return StringUtil.applySha256(index + previousHash + timestamp + transactions.toString() + nonce);
     }
 
-    public String getHash() {
-        return hash;
-    }
-
     public int getIndex() {
         return index;
     }
 
-    // Other getters as needed...
-
+    public long getTimestamp() {
+        return timestamp;
+    }
 
     public List<Transaction> getTransactions() {
         return transactions;
+    }
+
+    public String getPreviousHash() {
+        return previousHash;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public int getNonce() {
+        return nonce;
     }
 }

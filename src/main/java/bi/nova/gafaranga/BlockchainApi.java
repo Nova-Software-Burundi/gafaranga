@@ -42,6 +42,7 @@ public class BlockchainApi {
                     "note", "Save this address securely. It is not stored on the server."
             ));
         });
+        app.get("/explorer", ctx -> ctx.json(blockchain.getBlockSummaries()));
 
     }
 

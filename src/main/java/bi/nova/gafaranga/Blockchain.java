@@ -2,6 +2,7 @@ package bi.nova.gafaranga;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static bi.nova.gafaranga.BlockChainConfig.FOUNDER_ADDRESS;
 import static bi.nova.gafaranga.BlockChainConfig.SYSTEM_ADDRESS;
@@ -24,6 +25,17 @@ public class Blockchain {
         chain.add(genesis);
 
         balances.put("GAF_FOUNDER", new BigDecimal("100000000"));
+    }
+
+    public List<BlockSummary> getBlockSummaries() {
+        return chain.stream()
+                .map(block -> new BlockSummary(
+                        block.getIndex(),
+                        block.getTimestamp(),
+                        block.getTransactions().size(),
+                        block.getHash().substring(0, Math.min(10, block.getHash().length()))
+                ))
+                .collect(Collectors.toList());
     }
 
     public Transaction getTransactionById(String txId) {
