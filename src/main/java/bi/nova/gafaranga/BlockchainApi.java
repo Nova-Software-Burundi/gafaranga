@@ -43,7 +43,7 @@ public class BlockchainApi {
             ));
         });
         app.get("/explorer", ctx -> ctx.json(blockchain.getBlockSummaries()));
-
+        app.get("/status", ctx -> ctx.json(blockchain.getStatus()));
     }
 
     private void getTransactionById(Context ctx) {

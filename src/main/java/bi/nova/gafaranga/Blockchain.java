@@ -149,4 +149,33 @@ public class Blockchain {
         }
         return result;
     }
+
+    public Map<String, Object> getStatus() {
+        Map<String, Object> status = new HashMap<>();
+
+        int chainHeight = chain.size();
+        long totalTransactions = chain.stream()
+                .mapToLong(block -> block.getTransactions().size())
+                .sum();
+
+        Set<String> uniqueWallets = new HashSet<>();
+        chain.forEach(block -> {
+            for (Transaction tx : block.getTransactions()) {
+                uniqueWallets.add(tx.getSender());
+                uniqueWallets.add(tx.getRecipient());
+            }
+        });
+
+        long latestTimestamp = chain.isEmpty()
+                ? 0
+                : chain.get(chainHeight - 1).getTimestamp();
+
+        status.put("chainHeight", chainHeight);
+        status.put("totalTransactions", totalTransactions);
+        status.put("uniqueWallets", uniqueWallets.size());
+        status.put("latestBlockTime", latestTimestamp);
+
+        return status;
+    }
+
 }
