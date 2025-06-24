@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static bi.nova.gafaranga.BlockChainConfig.SYSTEM_ADDRESS;
 
@@ -50,6 +51,12 @@ public class BlockchainApi {
         app.get("/explorer", ctx -> ctx.json(blockchain.getBlockSummaries()));
         app.get("/status", ctx -> ctx.json(blockchain.getStatus()));
         app.post("/faucet", this::faucet);
+        app.get("/transactions", ctx -> {
+            List<Transaction> allTxs = blockchain.getChain().stream()
+                    .flatMap(block -> block.getTransactions().stream())
+                    .collect(Collectors.toList());
+            ctx.json(allTxs);
+        });
     }
 
     private void faucet(Context ctx) {
